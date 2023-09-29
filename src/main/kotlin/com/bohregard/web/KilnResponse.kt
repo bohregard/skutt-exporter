@@ -24,10 +24,27 @@ data class Kiln(
 @Serializable
 data class KilnStatus(
     @SerialName("diag") val diagnostic: KilnStatusDiagnostic,
+    val firing: KilnFiring,
     @SerialName("fw") val firmware: String,
     val mode: String,
     @SerialName("num_fire") val numFires: Int,
     @SerialName("t2") val temp: Int
+)
+
+@Serializable
+data class KilnFiring(
+    @SerialName("set_pt") val setPoint: Int,
+    val step: String,
+    @SerialName("fire_min") val fireMin: Int,
+    @SerialName("fire_hour") val fireHour: Int,
+    @SerialName("hold_min") val holdMin: Int,
+    @SerialName("hold_hour") val holdHour: Int,
+    @SerialName("start_min") val startMin: Int,
+    @SerialName("start_hour") val startHour: Int,
+    val cost: String,
+    @SerialName("max_temp") val maxTemp: Int,
+    @SerialName("etr") val estimatedTimeRemaining: String,
+    @SerialName("cost_raw") val costRaw: Int
 )
 
 @Serializable
@@ -63,7 +80,7 @@ data class KilnProgramStep(
     @SerialName("hr") val hourHold: Int,
     @SerialName("_id") val id: String,
     @SerialName("mn") val minuteHold: Int,
-    @SerialName("rt") val rate: Int,
+    @SerialName("rt") val ramp: Int,
     @SerialName("num") val step: Int,
     @SerialName("t") val temp: Int,
 )
@@ -91,6 +108,7 @@ data class KilnConfig(
 enum class KilnTempConfig {
     @SerialName("F")
     FAHRENHEIT,
+
     @SerialName("C")
     CELSIUS
 }
@@ -99,6 +117,7 @@ enum class KilnTempConfig {
 enum class KilnErrorCodes {
     @SerialName("On")
     ON,
+
     @SerialName("Off")
     OFF
 }

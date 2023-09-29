@@ -9,11 +9,15 @@ import retrofit2.http.POST
 
 interface SkuttApi {
     @FormUrlEncoded
-    @POST("https://263chzc7pa.execute-api.us-west-2.amazonaws.com/prod/users/login")
+    @POST("https://api.kilnlink.com/users/login")
     suspend fun getAuth(
         @Field("email") email: String,
         @Field("password") password: String,
     ): AuthResponse
+
+    @Headers("x-app-name-token: kiln-link")
+    @POST("kilns/view")
+    suspend fun getKilnsSlim(@Header("x-access-token") token: String, @Body kilnRequest: KilnRequest): KilnResponse
 
     @Headers("x-app-name-token: kiln-link")
     @POST("kilns/view")
