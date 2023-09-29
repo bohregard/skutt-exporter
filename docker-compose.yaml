@@ -1,0 +1,24 @@
+services:
+  skutt-api:
+    image: skutt-api:latest
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Make sure these values get passed through from the env file
+      - SKUTT_USERNAME
+      - SKUTT_PASSWORD
+    labels:
+      net.unraid.docker.icon: "/mnt/user/docker/icons/skutt-api.png"
+  prometheus:
+    image: prom/prometheus:v2.38.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    labels:
+      net.unraid.docker.icon: "/mnt/user/docker/icons/prometheus.png"
+volumes:
+    prometheus_data: {}
