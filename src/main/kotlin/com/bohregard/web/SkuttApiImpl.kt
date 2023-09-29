@@ -80,6 +80,7 @@ class SkuttApiImpl {
     private val a2 = AtomicInteger(0)
     private val a3 = AtomicInteger(0)
     private val currentRampTemp = AtomicInteger(0)
+    private val currentRampMaxTemp = AtomicInteger(0)
     private val boardTemp = AtomicInteger(0)
 
     suspend fun fetchKilnData(authResponse: AuthResponse) {
@@ -100,6 +101,11 @@ class SkuttApiImpl {
             a3.set(kiln.status.diagnostic.amp3)
             boardTemp.set(kiln.status.diagnostic.boardTemp)
             currentRampTemp.set(kiln.status.firing.setPoint)
+
+            val currentRamp = kiln.status.firing.step.replace("Ramp (\\d+) of (\\d+)".toRegex(), "$1")
+                .toInt() - 1
+
+            currentRampMaxTemp.set(kiln.program.steps[currentRamp].temp)
 
             val tags = listOf(
                 Tag.of("kiln", authResponse.kilnInfo.first { it.id == kiln.serialNumber }.name),
@@ -165,6 +171,11 @@ class SkuttApiImpl {
                 "kiln_current_ramp_temp",
                 tags,
                 currentRampTemp
+            )
+            appMicrometerRegistry.gauge(
+                "kiln_current_ramp_temp_max",
+                tags,
+                currentRampMaxTemp
             )
         }
     }
