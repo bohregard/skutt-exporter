@@ -72,6 +72,8 @@ class SkuttApiImpl {
     private val temp = AtomicInteger(0)
     private val fires = AtomicInteger(0)
     private val updated = AtomicLong(0)
+    private val noLoad = AtomicInteger(0)
+    private val fullLoad = AtomicInteger(0)
     private val v1 = AtomicInteger(0)
     private val v2 = AtomicInteger(0)
     private val v3 = AtomicInteger(0)
@@ -92,6 +94,8 @@ class SkuttApiImpl {
             temp.set(kiln.status.temp)
             fires.set(kiln.status.numFires)
             updated.set(kiln.updatedAt.toEpochMilliseconds())
+            noLoad.set(kiln.status.diagnostic.loadNo)
+            fullLoad.set(kiln.status.diagnostic.loadFull)
             v1.set(kiln.status.diagnostic.volt1)
             v2.set(kiln.status.diagnostic.volt2)
             v3.set(kiln.status.diagnostic.volt3)
@@ -99,6 +103,7 @@ class SkuttApiImpl {
             a1.set(kiln.status.diagnostic.amp1)
             a2.set(kiln.status.diagnostic.amp2)
             a3.set(kiln.status.diagnostic.amp3)
+
             boardTemp.set(kiln.status.diagnostic.boardTemp)
             currentRampTemp.set(kiln.status.firing.setPoint)
 
@@ -176,6 +181,16 @@ class SkuttApiImpl {
                 "kiln_current_ramp_temp_max",
                 tags,
                 currentRampMaxTemp
+            )
+            appMicrometerRegistry.gauge(
+                "kiln_diag_no_load",
+                tags,
+                noLoad
+            )
+            appMicrometerRegistry.gauge(
+                "kiln_diag_full_load",
+                tags,
+                fullLoad
             )
         }
     }
